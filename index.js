@@ -16,17 +16,20 @@ const app = express();
 app.use(bodyParser.json());
 
 let notes;
+let users;
 
 try {
   const db = fs.readFileSync(DB_PATH);
   const data = JSON.parse(db);
   notes = data.notes;
+  users = data.users;
 } catch (error) {
   notes = [];
+  users = {};
 }
 
 function saveDate() {
-  const data = JSON.stringify({notes: notes});
+  const data = JSON.stringify({notes: notes, users: users});
   fs.writeFileSync(DB_PATH, data);
 }
 
@@ -54,6 +57,17 @@ app.delete(NOTES_URL, (req, res) => {
   res.json({
     deleted: true,
   });
+});
+
+app.post('/auth', (req, res) => {
+  const name = req.body.name;
+  const password = req.body.password;
+
+  if (users[name] === password) {
+    res.json({success: true});
+  } else {
+    res.json({error: "ERROR"});
+  }
 });
 
 app.get('*', isProduction ? express.static(DIST_PATH) : proxy(PROXY_URL));

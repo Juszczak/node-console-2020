@@ -48,4 +48,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const notes = body.notes;
       notes.forEach(note => addNote(note));
     });
+
+  const login = document.getElementById('login');
+  const name = document.getElementById('name');
+  const password = document.getElementById('password');
+  const status = document.getElementById('status')
+
+  login.addEventListener('submit', event => {
+    event.preventDefault();
+    status.innerText = 'Authenticating';
+
+    fetch('/auth', {
+      method: 'POST',
+      headers: requestHeaders,
+      body: JSON.stringify({name: name.value, password: password.value}),
+    })
+      .then(res => res.json())
+      .then(body => {
+        status.innerText = body.success === true ? 'SUCCESS' : body.error;
+      });
+  });
 });
