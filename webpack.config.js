@@ -3,8 +3,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const isProduction = !!process.env.WEBPACK_PRODUCTION;
 
-console.log('isProduction:', typeof isProduction);
-
 const htmlPluginConfig = {template: './src/index.html'};
 const htmlPlugin = new HtmlWebpackPlugin(htmlPluginConfig)
 
@@ -19,5 +17,8 @@ module.exports = {
     filename: '[name].js'
   },
   plugins: [htmlPlugin, copyPlugin],
-  mode: isProduction ? 'production' : 'development'
+  mode: isProduction ? 'production' : 'development',
+  devServer: {
+    port: +process.env.PROXY_PORT || 8080,
+  }
 };
